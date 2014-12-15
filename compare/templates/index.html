@@ -1,0 +1,6 @@
+{% for query in queries %}
+    <h3>{{ query.title }}</h3>
+    {% for mt in query.maths %}
+        <li>{{mt.tex}}</li>
+    {% endfor %}
+{% endfor %}
