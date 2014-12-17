@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+    <body>
+{% autoescape off %}
+        {% for mt in maths %}
+            {% if mt.score > 2 %}
+                <li class="hrel">{{mt.score}}: {{mt.paraname}}</li>
+                <div class="hrel">{{mt.html}}</div>
+            {% elif mt.score > 0 %}
+                <li class="prel">{{mt.score}}: {{mt.paraname}}</li>
+                <div class="prel">{{mt.html}}</div>
+            {% else %}
+                <li class="norel">{{mt.score}}: {{mt.paraname}}</li>
+                <div class="norel">{{mt.html}}</div>
+            {% endif %}  
+        {% endfor %}
+{% endautoescape %}
+
+    </body>
+</html>

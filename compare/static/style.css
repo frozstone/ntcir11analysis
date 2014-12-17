@@ -1,0 +1,21 @@
+.hrel {
+    color: green;
+}
+
+.prel {
+    color: orange;
+}
+
+.norel {
+    color: black;
+}
+
+div {
+    font-size: 12px;
+}
+
+li {
+    font-weight: bold;
+    font-style:italic;
+    font-size: 14px;
+}
