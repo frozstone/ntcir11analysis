@@ -1,8 +1,40 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>jQuery UI Accordion - Default functionality</title>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+        {% load staticfiles %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <script>
+            $(document).ready(function() {
+                $( "#accordion" ).accordion({
+                    collapsile: true,
+                    heightStyle:"content"
+                });
+                $("h3", "#accordion").click(function(e) {
+                    var contentDiv = $(this).next("div");
+                    var retval = $(this).find("a").attr("href"); 
+                    contentDiv.load(retval);
+                });     
+            });
+        </script>
+    </head>
+    <body>
+     
+<div id="accordion">
 {% autoescape off %}
 {% for query in queries %}
-    <h3>{{ query.title }}</h3>
-    {% for mt in query.maths %}
-        <li>{{mt.html}}</li>
-    {% endfor %}
+    <h3><a href="{{ query.link }}">{{ query.title }}</a></h3>
+    <div>
+        Loading...
+    </div>
 {% endfor %}
 {% endautoescape %}
+
+</div>
+
+    </body>
+</html>
