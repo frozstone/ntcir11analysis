@@ -6,16 +6,17 @@ from collections import OrderedDict
 from xml.dom import minidom
 
 # Create your views here.
-#dataPath = '/Users/giovanni/working/ntcir11/ntcir11-analysis/data/'
-#qrelfile = 'NTCIR_2014_results/MCAT/result_judge/NTCIR11_Math-qrels.dat'
-#submfile = 'NTCIR_2014_results/MCAT/result_submit/MCAT_all.tsv'
-#htmlDir = '/Users/giovanni/working/ntcir11/ntcir11-analysis/data/xhtmls/'
+queryfile = 'NTCIR_2014_topic/NTCIR11-Math2-queries-participants.xml'
+dataPath = '/Users/giovanni/working/ntcir11/ntcir11-analysis/data/'
+qrelfile = 'NTCIR_2014_results/MCAT/result_judge/NTCIR11_Math-qrels.dat'
+submfile = 'NTCIR_2014_results/MCAT/result_submit/MCAT_all.tsv'
+htmlDir = '/Users/giovanni/working/ntcir11/ntcir11-analysis/data/xhtmls/'
 
-queryfile = 'NTCIR11-Math2-queries-participants.xml'
-dataPath = 'D:/AizawaLaboratory/Mathcat/ntcir11/'
-qrelfile = 'MCAT/result_judge/NTCIR11_Math-qrels.dat'
-submfile = 'MCAT/result_submit/MCAT_all.tsv'
-htmlDir = 'D:/AizawaLaboratory/Mathcat/ntcir11/xhtmls/'
+#queryfile = 'NTCIR11-Math2-queries-participants.xml'
+#dataPath = 'D:/AizawaLaboratory/Mathcat/ntcir11/'
+#qrelfile = 'MCAT/result_judge/NTCIR11_Math-qrels.dat'
+#submfile = 'MCAT/result_submit/MCAT_all.tsv'
+#htmlDir = 'D:/AizawaLaboratory/Mathcat/ntcir11/xhtmls/'
 
 nmath_subm = 10
 
@@ -57,7 +58,8 @@ def displaySubm(qrel, subm, nmath):
         submDict['P10_R'] = summ[query]['R'][1]
         submDict['P5_PR'] = summ[query]['PR'][0]
         submDict['P10_PR'] = summ[query]['PR'][1]
-        submDict['mathml'] = topicdict[query]
+        submDict['mathml'] = topicdict[query]['latex']
+        submDict['keywords'] = ' '.join(topicdict[query]['keywords']) 
         submDict['link'] = '../ajax/?qid=' + query[query.rindex('-') + 1:]
         submList.append(submDict)
         print submDict['P5_R']
@@ -101,15 +103,23 @@ def getQuerySummary(qrel, subm):
         summ[query] = {'R':(P5_R, P10_R), 'PR':(P5_PR, P10_PR)}
     return summ
     
+def getKeywordTokens(keywordTags):
+    ks = []
+    for k in keywordTags:
+        kval = k.firstChild.nodeValue
+        ks.extend(kval.split())
+    return ks
+
 def getQueryPresentation():
     xdoc = minidom.parse(path.join(dataPath, queryfile))
     topics = xdoc.getElementsByTagName('topic')
     topicdict = {}
     for topic in topics:
         topicname = topic.getElementsByTagName('num')[0].firstChild.nodeValue
-        #mathml = [t for t in topic.getElementsByTagName('m:annotation-xml') if t.getAttribute('encoding') == 'MathML-Presentation'][0].toxml()
+        mathml = [t for t in topic.getElementsByTagName('m:annotation-xml') if t.getAttribute('encoding') == 'MathML-Presentation'][0].toxml()
         latex = [t for t in topic.getElementsByTagName('m:annotation') if t.getAttribute('encoding') == 'application/x-tex'][0].firstChild.nodeValue
-        topicdict[topicname] = latex
+        keywords = getKeywordTokens(topic.getElementsByTagName('keyword'))
+        topicdict[topicname] = {'latex':latex, 'mathml': mathml, 'keywords':keywords}
     return topicdict
     
 def ajax(request):
@@ -137,7 +147,8 @@ def displayQrel(qrel, subm):
         qrelDict['title'] = query
         qrelDict['N_R'] = len(mathsInQrel_R.difference(set(maths[:nmath_subm])))
         qrelDict['N_PR'] = len(mathsInQrel_PR.difference(set(maths[:nmath_subm])))
-        qrelDict['mathml'] = topicdict[query]
+        qrelDict['mathml'] = topicdict[query]['latex']
+        qrelDict['keywords'] = ' '.join(topicdict[query]['keywords'])
         qrelDict['link'] = '../ajax/?qrel=true&qid=' + query[query.rindex('-') + 1:]
         qrelList.append(qrelDict)
     return qrelList
