@@ -27,7 +27,11 @@
 <div id="accordion">
 {% autoescape off %}
 {% for query in queries %}
-    <h3><a href="{{ query.link }}">{{ query.title }}</a></h3>
+    {% if isqrel == 'true' %}
+      <h3><a href="{{ query.link }}">{{ query.title }} N:({{query.N_R}},{{query.N_PR}}) *** {{query.mathml}}</a></h3>
+    {%else%}
+      <h3><a href="{{ query.link }}">{{ query.title }} P@5:({{query.P5_R}},{{query.P5_PR}}) P@10:({{query.P10_R}},{{query.P10_PR}}) *** {{query.mathml}}</a></h3>
+    {%endif%}
     <div>
         Loading...
     </div>
