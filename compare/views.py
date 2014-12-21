@@ -62,7 +62,6 @@ def displaySubm(qrel, subm, nmath):
         submDict['keywords'] = ' '.join(topicdict[query]['keywords']) 
         submDict['link'] = '../ajax/?qid=' + query[query.rindex('-') + 1:]
         submList.append(submDict)
-        print submDict['P5_R']
     return submList
 
 def displaySingleQuery(qrel, subm, nmath, qid):
@@ -88,7 +87,6 @@ def displaySingleQueryForQrel(qrel, subm, qid):
         if mt in mathsInSubm: continue
         score = qrel[query][mt]
         qrelList.append({'paraname':mt, 'score':score, 'html':extractHTMLBody(mt)})
-    print len(qrelList)
     return qrelList
     
 def getQuerySummary(qrel, subm):
